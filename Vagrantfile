@@ -1,13 +1,22 @@
 VM_USER = 'vagrant'
-HOST_PATH='/Users/ardeearam/Code'
-GUEST_PATH='/home/' + VM_USER + '/code'
-NODE_VERSION='11.10.0'
-NVM_VERSION='v0.34.0'
+
+HOST_HOME = '/Users/ardeearam'
+GUEST_HOME = '/home/' + VM_USER
+
+HOST_CODE_PATH = HOST_HOME + '/Code'
+GUEST_CODE_PATH = GUEST_HOME + '/code'
+
+HOST_SSH_PATH = HOST_HOME + '/.ssh'
+GUEST_SSH_PATH = GUEST_HOME + '/.ssh'
+
+NODE_VERSION = '11.10.0'
+NVM_VERSION = 'v0.34.0'
 
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
   config.vm.network "forwarded_port", guest: 3000, host: 3000 
-  config.vm.synced_folder HOST_PATH, GUEST_PATH
+  config.vm.synced_folder HOST_CODE_PATH, GUEST_CODE_PATH
+  config.vm.synced_folder HOST_SSH_PATH, GUEST_SSH_PATH
 
   config.vm.provision "shell", inline: <<-SHELL
     sed --in-place --regexp-extended \
@@ -22,7 +31,6 @@ Vagrant.configure("2") do |config|
     source /root/.nvm/nvm.sh 
     nvm install #{NODE_VERSION}
     nvm use #{NODE_VERSION}
-
 
     # Install Docker
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
