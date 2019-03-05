@@ -51,7 +51,6 @@ Vagrant.configure("2") do |config|
 
     # Install AWS-CLI
     pip3 install awscli --upgrade --user
-    aws --version
 
     # Copy SSH keys
     cp ${GUEST_MY_SSH_PATH}/* ${GUEST_SSH_PATH}
