@@ -24,6 +24,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder HOST_AWS_PATH, GUEST_AWS_PATH
 
   config.vm.provision "shell", inline: <<-SHELL
+    add-apt-repository universe
     sed --in-place --regexp-extended "s/(archive\.ubuntu\.com)/mirror.pregi.net/" /etc/apt/sources.list
     sed --in-place --regexp-extended "s/(security\.ubuntu\.com)/mirror.pregi.net/" /etc/apt/sources.list
     apt-get update 
