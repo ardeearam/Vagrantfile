@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
     source #{GUEST_HOME}/.nvm/nvm.sh && nvm install #{NODE_VERSION} && nvm use #{NODE_VERSION}
 
     # Install AWS-CLI
-    pip install awscli --upgrade --user
+    pip3 install awscli --upgrade --user
     aws --version
 
     # Copy SSH keys
