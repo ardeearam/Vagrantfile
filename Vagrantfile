@@ -18,7 +18,7 @@ NVM_VERSION = 'v0.34.0'
 
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
-  config.vm.network "forwarded_port", guest: 3000, host: 3000 
+  config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true 
   config.vm.synced_folder HOST_CODE_PATH, GUEST_CODE_PATH
   config.vm.synced_folder HOST_SSH_PATH, GUEST_MY_SSH_PATH
   config.vm.synced_folder HOST_AWS_PATH, GUEST_AWS_PATH
@@ -28,7 +28,9 @@ Vagrant.configure("2") do |config|
     sed --in-place --regexp-extended "s/(archive\.ubuntu\.com)/mirror.pregi.net/" /etc/apt/sources.list
     sed --in-place --regexp-extended "s/(security\.ubuntu\.com)/mirror.pregi.net/" /etc/apt/sources.list
     apt-get update 
-    apt-get install -y git curl apt-transport-https ca-certificates curl software-properties-common python3-pip
+    apt-get install -y git curl apt-transport-https ca-certificates curl software-properties-common 
+    apt-get update
+    apt-get install -y python3-pip
 
     # Install Docker
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -48,7 +50,7 @@ Vagrant.configure("2") do |config|
     source #{GUEST_HOME}/.nvm/nvm.sh && nvm install #{NODE_VERSION} && nvm use #{NODE_VERSION}
 
     # Install AWS-CLI
-    pip3 install awscli --upgrade --user
+    pip install awscli --upgrade --user
     aws --version
 
     # Copy SSH keys
