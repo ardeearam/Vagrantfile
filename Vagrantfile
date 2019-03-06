@@ -9,6 +9,7 @@ GUEST_CODE_PATH = GUEST_HOME + '/code'
 HOST_SSH_PATH = HOST_HOME + '/.ssh'
 GUEST_SSH_PATH = GUEST_HOME + '/.ssh'
 GUEST_MY_SSH_PATH = GUEST_HOME + '/.myssh'
+GUEST_MY_SSH_PATH_ALL = GUEST_MY_SSH_PATH + '/*'
 
 HOST_AWS_PATH = HOST_HOME + '/.aws'
 GUEST_AWS_PATH = GUEST_HOME + '/.aws'
@@ -28,9 +29,9 @@ Vagrant.configure("2") do |config|
     sed --in-place --regexp-extended "s/(archive\.ubuntu\.com)/mirror.pregi.net/" /etc/apt/sources.list
     sed --in-place --regexp-extended "s/(security\.ubuntu\.com)/mirror.pregi.net/" /etc/apt/sources.list
     apt-get update 
-    apt-get install -y git curl apt-transport-https ca-certificates curl software-properties-common 
+    apt-get install -y git curl apt-transport-https ca-certificates curl software-properties-common
     apt-get update
-    apt-get install -y python3-pip
+    apt-get install -y python3-pip unzip
 
     # Install Docker
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -52,7 +53,18 @@ Vagrant.configure("2") do |config|
     # Install AWS-CLI
     pip3 install awscli --upgrade --user
 
-    # Copy SSH keys
-    cp ${GUEST_MY_SSH_PATH}/* ${GUEST_SSH_PATH}
+    # Install ngrok
+    npm install -g ngrok
+
+    # Install Vim Editorconfig Plugin
+    mkdir -p ~/.vim
+    wget https://github.com/editorconfig/editorconfig-vim/archive/master.zip -O /tmp/master.zip
+    unzip /tmp/master.zip -d /tmp
+    mv /tmp/editorconfig-vim-master/plugin ~/.vim
+    mv /tmp/editorconfig-vim-master/autoload ~/.vim
+    mv /tmp/editorconfig-vim-master/doc ~/.vim
+
+    # Copy SSH keys. Cannot make this to work :(
+    # cp '/home/vagrant/.myssh/*' /home/vagrant/.ssh
   SHELL
 end
