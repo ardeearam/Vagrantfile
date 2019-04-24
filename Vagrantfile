@@ -6,6 +6,9 @@ GUEST_HOME = '/home/' + VM_USER
 HOST_CODE_PATH = HOST_HOME + '/Code'
 GUEST_CODE_PATH = GUEST_HOME + '/code'
 
+HOST_DOWNLOADS_PATH = HOST_HOME + '/Downloads'
+GUEST_DOWNLOADS_PATH = GUEST_HOME + '/downloads'
+
 HOST_SSH_PATH = HOST_HOME + '/.ssh'
 GUEST_SSH_PATH = GUEST_HOME + '/.ssh'
 GUEST_MY_SSH_PATH = GUEST_HOME + '/.myssh'
@@ -18,11 +21,17 @@ NODE_VERSION = '11.10.0'
 NVM_VERSION = 'v0.34.0'
 
 Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |v|
+   v.cpus = 2
+   v.memory = 8192
+  end
+
   config.vm.box = "ubuntu/bionic64"
   config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true 
   config.vm.synced_folder HOST_CODE_PATH, GUEST_CODE_PATH
   config.vm.synced_folder HOST_SSH_PATH, GUEST_MY_SSH_PATH
   config.vm.synced_folder HOST_AWS_PATH, GUEST_AWS_PATH
+  config.vm.synced_folder HOST_DOWNLOADS_PATH, GUEST_DOWNLOADS_PATH
 
   config.vm.provision "shell", inline: <<-SHELL
     add-apt-repository universe
