@@ -78,7 +78,5 @@ Vagrant.configure("2") do |config|
     mv /tmp/editorconfig-vim-master/autoload ~/.vim
     mv /tmp/editorconfig-vim-master/doc ~/.vim
 
-    # Copy SSH keys. Cannot make this to work :(
-    # cp '/home/vagrant/.myssh/*' /home/vagrant/.ssh
   SHELL
 end
