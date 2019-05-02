@@ -14,8 +14,11 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
 
   # Install if plug-in is not yet installed
-  if !Vagrant.has_plugin?('vagrant-disksize')
+  # Prevent infinite loop by not executing on `vagrant plugin`
+  if !Vagrant.has_plugin?('vagrant-disksize') && ARGV[0] != 'plugin'
     system "vagrant plugin install vagrant-disksize"
+    #Restart processing with the plug-in installed
+    exec "vagrant #{ARGV.join(' ')}"
   end
 
   config.disksize.size = '50GB'
