@@ -13,10 +13,13 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/bionic64"
 
-  # Run the following command first:
-  # vagrant plugin install vagrant-disksize
+  # Install if plug-in is not yet installed
+  if !Vagrant.has_plugin?('vagrant-disksize')
+    system "vagrant plugin install vagrant-disksize"
+  end
 
   config.disksize.size = '50GB'
+
   config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true
   config.vm.network "forwarded_port", guest: 30000, host: 30000, auto_correct: true
   config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
