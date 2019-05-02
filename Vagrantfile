@@ -1,21 +1,6 @@
-VM_USER = 'vagrant'
 
-HOST_HOME = '/Users/ardeearam'
-GUEST_HOME = '/home/' + VM_USER
-
-HOST_CODE_PATH = HOST_HOME + '/Code'
-GUEST_CODE_PATH = GUEST_HOME + '/code'
-
-HOST_DOWNLOADS_PATH = HOST_HOME + '/Downloads'
-GUEST_DOWNLOADS_PATH = GUEST_HOME + '/downloads'
-
-HOST_SSH_PATH = HOST_HOME + '/.ssh'
-GUEST_SSH_PATH = GUEST_HOME + '/.ssh'
-GUEST_MY_SSH_PATH = GUEST_HOME + '/.myssh'
-GUEST_MY_SSH_PATH_ALL = GUEST_MY_SSH_PATH + '/*'
-
-HOST_AWS_PATH = HOST_HOME + '/.aws'
-GUEST_AWS_PATH = GUEST_HOME + '/.aws'
+GUEST_HOME = '/home/vagrant'
+HOST_HOME = '~'
 
 NODE_VERSION = '11.10.0'
 NVM_VERSION = 'v0.34.0'
@@ -33,10 +18,24 @@ Vagrant.configure("2") do |config|
 
   config.disksize.size = '50GB'
   config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true 
-  config.vm.synced_folder HOST_CODE_PATH, GUEST_CODE_PATH
-  config.vm.synced_folder HOST_SSH_PATH, GUEST_MY_SSH_PATH
-  config.vm.synced_folder HOST_AWS_PATH, GUEST_AWS_PATH
-  config.vm.synced_folder HOST_DOWNLOADS_PATH, GUEST_DOWNLOADS_PATH
+
+  # Mount commonly-used directories
+  if Vagrant::Util::Platform.darwin?
+    config.vm.synced_folder HOST_HOME + '/Documents', GUEST_HOME + '/documents'
+    config.vm.synced_folder HOST_HOME + '/Downloads', GUEST_HOME + '/downloads'
+
+    # Auto-mount AWS credentials, if there is any
+    if Dir.exists?(HOST_HOME + '/.aws')
+      config.vm.synced_folder HOST_HOME + '/.aws', GUEST_HOME + '/.aws'
+    end 
+
+    # Do not override .ssh directly, as you will lose authorized_keys, and will not be
+    # able to vagrant ssh
+    if Dir.exists?(HOST_HOME + '/.ssh')
+      config.vm.synced_folder HOST_HOME + '/.ssh', GUEST_HOME + '/.myssh'
+    end 
+  end
+
 
   config.vm.provision "shell", inline: <<-SHELL
     add-apt-repository universe
@@ -77,6 +76,8 @@ Vagrant.configure("2") do |config|
     mv /tmp/editorconfig-vim-master/plugin ~/.vim
     mv /tmp/editorconfig-vim-master/autoload ~/.vim
     mv /tmp/editorconfig-vim-master/doc ~/.vim
+
+    # Install docker-compose
 
   SHELL
 end
