@@ -28,10 +28,10 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
   config.vm.network "forwarded_port", guest: 5432, host: 5432, auto_correct: true
 
+  config.vm.synced_folder HOST_HOME, '/host'
+
   # Mount commonly-used directories
   if Vagrant::Util::Platform.darwin?
-    config.vm.synced_folder HOST_HOME + '/Documents', GUEST_HOME + '/documents'
-    config.vm.synced_folder HOST_HOME + '/Downloads', GUEST_HOME + '/downloads'
 
     # Auto-mount AWS credentials, if there is any
     if Dir.exists?(HOST_HOME + '/.aws')
