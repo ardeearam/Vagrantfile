@@ -7,8 +7,8 @@ NVM_VERSION = 'v0.34.0'
 
 Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |v|
-   v.cpus = 2
-   v.memory = 8192
+   v.cpus = 4
+   v.memory = 12000
   end
 
   config.vm.box = "ubuntu/bionic64"
@@ -27,6 +27,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 30000, host: 30000, auto_correct: true
   config.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
   config.vm.network "forwarded_port", guest: 5432, host: 5432, auto_correct: true
+  config.vm.network "forwarded_port", guest: 38080, host: 38080, auto_correct: true
 
   config.vm.synced_folder HOST_HOME, '/host'
 
